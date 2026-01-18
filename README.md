@@ -38,6 +38,65 @@ Node.js service that consumes provider APIs:
 
 ## How Pact Contract Testing Works
 
+### Pact Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PACT CONTRACT TESTING FLOW                       │
+└─────────────────────────────────────────────────────────────────────┘
+
+PHASE 1: CONSUMER DEFINES CONTRACT
+╔═════════════════════════════════════════════════════════════════════╗
+║                                                                     ║
+║  Consumer Service                                                   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │ Consumer Test (pact.spec.js)                              │    ║
+║  │ ┌─────────────────────────────────────────────────────┐   │    ║
+║  │ │ 1. Define expected interactions:                   │   │    ║
+║  │ │    - GET /health → 200 {status: "OK"}             │   │    ║
+║  │ │    - GET /user/1 → 200 {id, name, email}          │   │    ║
+║  │ │    - POST /user → 201 {id, name, email}           │   │    ║
+║  │ │                                                     │   │    ║
+║  │ │ 2. Run tests with MOCK Provider                   │   │    ║
+║  │ │ 3. Pact library records all interactions           │   │    ║
+║  │ └─────────────────────────────────────────────────────┘   │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
+║                              ↓                                     ║
+║                      GENERATES PACT FILE                           ║
+║                   pacts/Consumer-Provider.json                     ║
+║                   (Contract Definition)                            ║
+║                                                                     ║
+╚═════════════════════════════════════════════════════════════════════╝
+
+PHASE 2: PROVIDER VERIFIES CONTRACT
+╔═════════════════════════════════════════════════════════════════════╗
+║                                                                     ║
+║  Provider Service                                                   ║
+║  ┌───────────────────────────────────────────────────────────┐    ║
+║  │ Provider Test (pact.spec.js)                              │    ║
+║  │ ┌─────────────────────────────────────────────────────┐   │    ║
+║  │ │ 1. Read pact file (Consumer's expectations)       │   │    ║
+║  │ │ 2. Start actual Provider service                  │   │    ║
+║  │ │ 3. Replay all interactions against Provider       │   │    ║
+║  │ │ 4. Verify responses match contract                │   │    ║
+║  │ │                                                     │   │    ║
+║  │ │ Result: ✓ All interactions verified               │   │    ║
+║  │ │      OR ✗ Contract broken - tests FAIL            │   │    ║
+║  │ └─────────────────────────────────────────────────────┘   │    ║
+║  └───────────────────────────────────────────────────────────┘    ║
+║                                                                     ║
+╚═════════════════════════════════════════════════════════════════════╝
+
+BENEFITS
+┌─────────────────────────────────────────────────────────────────────┐
+│ ✓ Consumer clearly documents API expectations                       │
+│ ✓ Provider knows exactly what NOT to break                          │
+│ ✓ Detects breaking changes before production                        │
+│ ✓ Enables independent development of Consumer & Provider            │
+│ ✓ Prevents integration issues in CI/CD pipelines                    │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
 ### 1. Consumer Test (Defines the Contract)
 - Located in `consumer/test/pact.spec.js`
 - Consumer defines expectations (interactions) with the Provider
