@@ -1,0 +1,118 @@
+{
+  "consumer": {
+    "name": "Consumer"
+  },
+  "interactions": [
+    {
+      "description": "a health check request",
+      "providerStates": [
+        {
+          "name": "provider is healthy"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/health"
+      },
+      "response": {
+        "body": {
+          "service": "Provider",
+          "status": "OK"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to create a new user",
+      "providerStates": [
+        {
+          "name": "a new user can be created"
+        }
+      ],
+      "request": {
+        "body": {
+          "email": "alice@example.com",
+          "name": "Alice Johnson"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/user"
+      },
+      "response": {
+        "body": {
+          "email": "alice@example.com",
+          "id": "3",
+          "name": "Alice Johnson"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a request to get non-existent user",
+      "providerStates": [
+        {
+          "name": "user does not exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/user/999"
+      },
+      "response": {
+        "body": {
+          "error": "User not found"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404
+      }
+    },
+    {
+      "description": "a request to get user 1",
+      "providerStates": [
+        {
+          "name": "user 1 exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/user/1"
+      },
+      "response": {
+        "body": {
+          "email": "john@example.com",
+          "id": "1",
+          "name": "John Doe"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "13.2.0"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "Provider"
+  }
+}

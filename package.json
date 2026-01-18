@@ -1,0 +1,17 @@
+{
+  "name": "pact-flow-demo",
+  "version": "1.0.0",
+  "description": "Demo project for pact-flow contract testing",
+  "private": true,
+  "workspaces": [
+    "provider",
+    "consumer"
+  ],
+  "scripts": {
+    "test": "npm run test:consumer && npm run test:provider",
+    "test:consumer": "cd consumer && npm run test",
+    "test:provider": "cd provider && npm run test",
+    "start:provider": "cd provider && npm start",
+    "start:consumer": "cd consumer && npm start"
+  }
+}
